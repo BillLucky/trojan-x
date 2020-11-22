@@ -1,0 +1,42 @@
+#!/bin/bash
+# desc: trojan x, fast run the trojan server
+if [ $# != 1 ] 
+then
+	echo "Usage: trx [start|stop|status|logs|host|region]"
+	echo "e.g: trx start"
+	exit 1
+fi
+
+# trx configuration path
+TR_PATH=/Users/libiao/Documents/Install/Develop/trojan
+RETVAL=0
+
+case "$1" in
+  "start")
+    nohup $TR_PATH/trojan >> $TR_PATH/trojan.log 2>&1 & 
+		;;
+	"stop")
+    kill $(ps axu|grep trojan | grep -v grep | awk -F" " '{print $2}')
+    tail $TR_PATH/trojan.log
+		;;
+	"status")
+    ps axu|grep trojan
+		;;
+	"logs")
+    tail -f $TR_PATH/trojan.log
+		;;
+	"host")
+    # print like xxx.xxx.com
+    cat $TR_PATH/config.json | grep "remote_addr" | cut -c 21-39
+		;;
+	"region")
+    # print region list
+    head -n 1 $TR_PATH/region.list
+		;;
+	*)
+		echo -e "Sorry, \033[41;37m $1 \033[0m is not support"
+		RETVAL=1
+		;;
+esac
+
+exit $RETVAL
