@@ -13,9 +13,11 @@ RETVAL=0
 
 case "$1" in
   "start")
+    networksetup -setsocksfirewallproxystate Wi-Fi on
     nohup $TR_PATH/trojan >> $TR_PATH/trojan.log 2>&1 & 
 		;;
 	"stop")
+    networksetup -setsocksfirewallproxystate Wi-Fi off
     kill $(ps axu|grep trojan | grep -v grep | awk -F" " '{print $2}')
     tail $TR_PATH/trojan.log
 		;;
